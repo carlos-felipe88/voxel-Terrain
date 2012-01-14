@@ -1,0 +1,24 @@
+video demo: http://www.youtube.com/watch?v=7xTUvElNTj4
+playable demo: http://mlanner.com
+
+Voxelterrain via Marching cubes and for level of detail Transvoxel ( http://www.terathon.com/voxels/ )
+
+Classes:
+blub::procedural::voxelTerrain3 is able to create randomly big voxelTerrains, with a randomly count of lods. Every lod has half the details of its parent.
+blub::procedural::voxelMap3 same as voxelTerrain3 but without lod. Gets used by voxelTerrain3 as lods. If you are not interested in lod but in seperate parts u may wanna use this class.
+namespace blub::procedural::voxelMap:: includes helperclasses for the terrain.
+blub::procedural::voxelMap::part3 For Clipping and performance-reasons the map gets divided in several parts. If u only use one huge voxelpart in a random size u may wanna use this class.
+blub::procedural::voxelMap::map3 includes the voxels. Replace or derive it to change the kind of voxelsaving. eg to a db.
+blub::procedural::voxelMap::editSphere and blub::procedural::voxelMap::editAxisAligendBox are examples for Terrainmodification. Create ur own modification via deriving blub::procedural::voxelMap::edit.
+blub::graphic::voxelTerrain is manager for lod of a voxelTerrain3. This is a non-trivial octree implementation (lod, threading)! because a higher lod has twice the size of his children and because of the 6 transvoxels which have to be set and unset, depending on its neighbours.
+
+Features:
+For highest performance most classes have there own threads. Even the graphic::voxelTerrain runs async and at only 20fps for performanceimprovements. So check the comments of the signals to asure asyncproblems.
+Between the parts no normaldifferences occur.
+lod got implemented with the transvoxel algorithm, so high perfmance (lookup-table like marching cubes) and no cracks between parts
+
+Performance:
+Memory: The largest problem of voxel is the memory-usage. At a Terrain 500x500x500 the memory usage would be a half gigabyte for 1000x1000x1000 it'd be 3.8gb. the blubLib does not save voxel it saves in every part its blub::procedural::voxelMap::edit. If a part3 gets calculated all voxel get recreated. Sounds like a lot CPU-time but it isn't. Because of several optimisations only the voxel which get chagend get created. at 1000 edits/part3 < 100ms which does not attract attention, because of threading and smart part3 rendering in graphic::voxelTerrain. If u dont wanna part3 let recalc all voxel every calculation u simply visit the method calculateGeometry and change the "calculate-Voxel-part" and move the begin() and end() of map3 to con/destuctor.
+CPU: the calculation of one part3 iso Surface runs in <=0.001 seconds at 16x16x16.
+
+
