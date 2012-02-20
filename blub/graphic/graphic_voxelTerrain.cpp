@@ -141,6 +141,7 @@ void voxelTerrain::partVoxelChanged(uint16 lod, int32 id, bool removePart)
                             /*m_scene->system()->addToDo(boost::bind(&voxelTerrain::deleteLeafGraphic, this, (**child).data()));*/
                             lf->entity = (**child).data()->entity;
                             lf->loading = true;
+//                            BWARNING("m_terrain->voxelMap(lod)->calculatePart(lf->id);");
                             m_terrain->voxelMap(lod)->calculatePart(lf->id);
                         }
                         (**child).data(lf);
@@ -239,6 +240,7 @@ octree<voxelTerrain::t_leaf> *voxelTerrain::findNode(axisAlignedBox aab, octree<
 
 void voxelTerrain::partChangedGraphic(uint16 lod, int32 id)
 {
+//    BWARNING("void voxelTerrain::partChangedGraphic(uint16 lod, int32 id)");
     /*if (lod != 0)
         return;*/
 
@@ -248,7 +250,7 @@ void voxelTerrain::partChangedGraphic(uint16 lod, int32 id)
     {
         // should not happen, but may occur because of async
         // untested because error quite difficult to construct
-        // BERROR("part.isNull()");
+        BERROR("part.isNull()");
         return; // TODO : fix bool loading!!!
     }
 
@@ -451,6 +453,7 @@ bool voxelTerrain::updateVisibilityRecursive(octree<t_leaf> *node, uint32 *debug
             lf->shouldBeVisible = shouldBeVisible;
             if (!lf->entity && !lf->loading && shouldBeVisible)
             {
+//                BWARNING("m_terrain->voxelMap(lod)->calculatePart(lf->id);");
                 m_terrain->voxelMap(lod)->calculatePart(lf->id);
                 lf->loading = true;
             }
